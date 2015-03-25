@@ -1212,7 +1212,7 @@ static const int64_t patchBlockRewardDuration = 10080; // 10080 blocks main net 
 static const int64_t patchBlockRewardDuration2 = 80160; // 80160 blocks main net change
 #define HARDFORK1_BLOCK 50
 #define HARDFORK2_BLOCK 50000
-#define HARDFORK3_BLOCK 575000 // multi-algo patch and new rewards
+#define HARDFORK3_BLOCK 580000 // multi-algo patch and new rewards
 
 static int64_t GenerateRandomInt(unsigned int s, int64_t nMin, int64_t nMax)
 {
