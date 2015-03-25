@@ -67,17 +67,16 @@ public:
         
         
 
+		vSeeds.push_back(CDNSSeedData("seed #1", "node.unattainium.tk:30881"));
+        vSeeds.push_back(CDNSSeedData("seed #2", "74.15.231.199:11015"));
+        vSeeds.push_back(CDNSSeedData("seed #3", "node.unattainium.tk"));
+        vSeeds.push_back(CDNSSeedData("seed #4", "46.28.205.70"));
+		vSeeds.push_back(CDNSSeedData("seed #5", "47.17.84.135"));
+		vSeeds.push_back(CDNSSeedData("seed #6", "70.70.136.216"));
+		vSeeds.push_back(CDNSSeedData("seed #7", "75.130.163.51"));
+		vSeeds.push_back(CDNSSeedData("seed #8", "76.164.203.26"));
+		vSeeds.push_back(CDNSSeedData("seed #9", "76.164.237.242"));
 
-        vSeeds.push_back(CDNSSeedData("seed #0", "137.135.57.205"));
-        vSeeds.push_back(CDNSSeedData("seed #1", "192.99.21.103"));
-        vSeeds.push_back(CDNSSeedData("seed #2", "46.28.205.70"));
-		vSeeds.push_back(CDNSSeedData("seed #3", "47.17.84.135"));
-		vSeeds.push_back(CDNSSeedData("seed #4", "70.70.136.216"));
-		vSeeds.push_back(CDNSSeedData("seed #5", "75.130.163.51"));
-		vSeeds.push_back(CDNSSeedData("seed #6", "76.164.203.26"));
-		vSeeds.push_back(CDNSSeedData("seed #7", "76.164.237.242"));
-		vSeeds.push_back(CDNSSeedData("seed #8", "node.unattainium.tk:30300"));
-		vSeeds.push_back(CDNSSeedData("seed #9", "node.unattainium.tk:30880"));
 		
 		
 		
