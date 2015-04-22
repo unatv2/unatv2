@@ -13,6 +13,7 @@ class ClientModel;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
+class BlockBrowser;
 
 QT_BEGIN_NAMESPACE
 class QStackedWidget;
@@ -32,6 +33,7 @@ public:
     bool setCurrentWallet(const QString& name);
     bool removeWallet(const QString &name);
     void removeAllWallets();
+	
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
 
@@ -54,11 +56,14 @@ public slots:
     void gotoHistoryPage();
 	/** Switch to chat page */
     void gotoChatPage();
+	/** Switch to exchange browser page */
+    void gotoExchangeBrowserPage();	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
 
+    void gotoBlockBrowserPage(); 
 	void reloadUi();
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

@@ -246,6 +246,11 @@ public:
     {
         return !(a == b);
     }
+	
+    bool IsOpReturn() const
+    {
+		return (scriptPubKey.Find(OP_RETURN) > 0);
+    }
 
     std::string ToString() const;
     void print() const;

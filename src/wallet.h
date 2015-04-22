@@ -13,6 +13,7 @@
 #include "ui_interface.h"
 #include "util.h"
 #include "walletdb.h"
+#include "stealthaddress.h"
 
 #include <algorithm>
 #include <map>
@@ -38,6 +39,8 @@ class COutput;
 class CReserveKey;
 class CScript;
 class CWalletTx;
+
+typedef std::map<CKeyID, CStealthKeyMetadata> StealthKeyMetaMap;
 
 /** (client) version numbers for particular wallet features */
 enum WalletFeature
@@ -94,6 +97,8 @@ public:
     StringMap destdata;
 };
 
+typedef std::map<std::string, std::string> mapValue_t;
+
 /** A CWallet is an extension of a keystore, which also maintains a set of transactions and balances,
  * and provides the ability to create new transactions.
  */
@@ -140,6 +145,10 @@ public:
     typedef std::map<unsigned int, CMasterKey> MasterKeyMap;
     MasterKeyMap mapMasterKeys;
     unsigned int nMasterKeyMaxID;
+
+    std::set<CStealthAddress> stealthAddresses;
+    StealthKeyMetaMap mapStealthKeyMeta;
+    uint32_t nStealth, nFoundStealth;
 
     CWallet()
     {
@@ -211,7 +220,8 @@ public:
     // Adds an encrypted key to the store, without saving it to disk (used by LoadWallet)
     bool LoadCryptedKey(const CPubKey &vchPubKey, const std::vector<unsigned char> &vchCryptedSecret);
     bool AddCScript(const CScript& redeemScript);
-    bool LoadCScript(const CScript& redeemScript) { return CCryptoKeyStore::AddCScript(redeemScript); }
+    bool LoadCScript(const CScript& redeemScript);
+//  bool LoadCScript(const CScript& redeemScript) { return CCryptoKeyStore::AddCScript(redeemScript); }
 
     /// Adds a destination data tuple to the store, and saves it to disk
     bool AddDestData(const CTxDestination &dest, const std::string &key, const std::string &value);
@@ -222,6 +232,7 @@ public:
     /// Look up a destination data tuple in the store, return true if found false otherwise
     bool GetDestData(const CTxDestination &dest, const std::string &key, std::string *value) const;
 
+    bool Lock();
     bool Unlock(const SecureString& strWalletPassphrase);
     bool ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase, const SecureString& strNewWalletPassphrase);
     bool EncryptWallet(const SecureString& strWalletPassphrase);
@@ -258,6 +269,16 @@ public:
     bool CreateTransaction(CScript scriptPubKey, int64_t nValue,
                            CWalletTx& wtxNew, CReserveKey& reservekey, int64_t& nFeeRet, std::string& strFailReason, const CCoinControl *coinControl = NULL);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey);
+
+    bool NewStealthAddress(std::string& sError, std::string& sLabel, CStealthAddress& sxAddr);
+    bool AddStealthAddress(CStealthAddress& sxAddr);
+    bool UnlockStealthAddresses(const CKeyingMaterial& vMasterKeyIn);
+    bool UpdateStealthAddress(std::string &addr, std::string &label, bool addIfNotExist);
+    bool CreateStealthTransaction(CScript scriptPubKey, int64_t nValue, std::vector<uint8_t>& P, std::vector<uint8_t>& narr, std::string& sNarr, CWalletTx& wtxNew, CReserveKey& reservekey, int64_t& nFeeRet, const CCoinControl* coinControl = NULL);
+    string SendStealthMoney(CScript scriptPubKey, int64_t nValue, std::vector<uint8_t>& P, std::vector<uint8_t>& narr, std::string& sNarr, CWalletTx& wtxNew, bool fAskFee);
+    bool SendStealthMoneyToDestination(CStealthAddress& sxAddress, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, std::string& sError, bool fAskFee = false);
+    bool FindStealthTransactions(const CTransaction& tx, mapValue_t& mapNarr);
+
     std::string SendMoney(CScript scriptPubKey, int64_t nValue, CWalletTx& wtxNew);
     std::string SendMoneyToDestination(const CTxDestination &address, int64_t nValue, CWalletTx& wtxNew);
 
@@ -756,7 +777,7 @@ public:
         READWRITE(vchPrivKey);
         READWRITE(nTimeCreated);
         READWRITE(nTimeExpires);
-        READWRITE(strComment);
+        READWRITE(LIMITED_STRING(strComment, 65536));
     )
 };
 
@@ -831,7 +852,7 @@ public:
         // Note: strAccount is serialized as part of the key, not here.
         READWRITE(nCreditDebit);
         READWRITE(nTime);
-        READWRITE(strOtherAccount);
+        READWRITE(LIMITED_STRING(strOtherAccount, 65536));
 
         if (!fRead)
         {
@@ -847,7 +868,7 @@ public:
             }
         }
 
-        READWRITE(strComment);
+        READWRITE(LIMITED_STRING(strComment, 65536));
 
         size_t nSepPos = strComment.find("\0", 0, 1);
         if (fRead)

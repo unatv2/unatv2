@@ -1454,6 +1454,7 @@ public:
     bool operator()(const CNoDestination &dest) const { return false; }
     bool operator()(const CKeyID &keyID) const { return keystore->HaveKey(keyID); }
     bool operator()(const CScriptID &scriptID) const { return keystore->HaveCScript(scriptID); }
+    bool operator()(const CStealthAddress &stxAddr) const { return stxAddr.scan_secret.size() == ec_secret_size; }
 };
 
 bool IsMine(const CKeyStore &keystore, const CTxDestination &dest)
@@ -1590,6 +1591,10 @@ public:
     }
 
     void operator()(const CNoDestination &none) {}
+
+    void operator()(const CStealthAddress &stxAddr) {
+	CScript script;
+    }	
 };
 
 void ExtractAffectedKeys(const CKeyStore &keystore, const CScript& scriptPubKey, std::vector<CKeyID> &vKeys) {
@@ -1931,6 +1936,12 @@ public:
         *script << OP_HASH160 << scriptID << OP_EQUAL;
         return true;
     }
+ bool operator()(const CStealthAddress &stxAddr) const {
+	script->clear();
+	//*script << OP_HASH160 << scriptID << OP_EQUAL;
+	LogPrintf("TODO\n");
+	return false;
+}
 };
 
 void CScript::SetDestination(const CTxDestination& dest)

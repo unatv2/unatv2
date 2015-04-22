@@ -6,6 +6,7 @@
 
 #include "hash.h"
 #include "uint256.h"
+#include "stealthaddress.h"
 
 #include <assert.h>
 #include <stdint.h>
@@ -114,9 +115,8 @@ std::string EncodeBase58Check(const std::vector<unsigned char>& vchIn) {
 }
 
 bool DecodeBase58Check(const char* psz, std::vector<unsigned char>& vchRet) {
-    if (!DecodeBase58(psz, vchRet))
-        return false;
-    if (vchRet.size() < 4)
+    if (!DecodeBase58(psz, vchRet) ||
+        (vchRet.size() < 4))
     {
         vchRet.clear();
         return false;
@@ -154,8 +154,8 @@ void CBase58Data::SetData(const std::vector<unsigned char> &vchVersionIn, const 
 
 bool CBase58Data::SetString(const char* psz, unsigned int nVersionBytes) {
     std::vector<unsigned char> vchTemp;
-    DecodeBase58Check(psz, vchTemp);
-    if (vchTemp.size() < nVersionBytes) {
+    bool rc58 = DecodeBase58Check(psz, vchTemp);
+    if ((!rc58) || (vchTemp.size() < nVersionBytes)) {
         vchData.clear();
         vchVersion.clear();
         return false;
@@ -196,6 +196,7 @@ namespace {
         bool operator()(const CKeyID &id) const { return addr->Set(id); }
         bool operator()(const CScriptID &id) const { return addr->Set(id); }
         bool operator()(const CNoDestination &no) const { return false; }
+        bool operator()(const CStealthAddress &stxAddr) const { return false; }
     };
 };
 
@@ -265,8 +266,57 @@ bool CBitcoinSecret::IsValid() const {
     return fExpectedFormat && fCorrectVersion;
 }
 
-bool CBitcoinSecret::SetString(const char* pszSecret) {
-    return CBase58Data::SetString(pszSecret) && IsValid();
+bool CBitcoinSecret::SetString(const char* psz) {
+ int nSecretLength = strlen(psz);
+    if (nSecretLength == 22 || nSecretLength == 26 || nSecretLength == 30)
+    {
+        if (psz[0] == 'S')
+        {
+            int i;
+            bool fMini = false;
+            for (i = 0; i < nSecretLength; i++)
+            {
+                char c = psz[i];
+                if (c < '1' || c > 'z') break;
+                if (c > '9' && c < 'A') break;
+                if (c > 'Z' && c < 'a') break;
+                if (c == 'I' || c == 'l' || c == 'O') break;
+            }
+            if (i==nSecretLength)
+            {
+                std::string strKeycheck(psz);
+                strKeycheck += "?";
+                uint256 hash;
+                SHA256((unsigned char*)strKeycheck.c_str(), strKeycheck.size(), (unsigned char*)&hash);
+                if (*(hash.begin()) == 0)
+                    fMini=true;
+                else
+                {
+                /**    uint256 hash2;
+                    for (i=0; i<358; i++) // 358*2=716 +1=717
+                    {
+                        SHA256((unsigned char*)BEGIN(hash), sizeof(hash), (unsigned char*)&hash2);
+                        SHA256((unsigned char*)BEGIN(hash2), sizeof(hash2), (unsigned char*)&hash);
+                    }
+                    if (*(hash.begin()) == 0) fMini = true;
+				*/
+					return false;
+                }
+                if (fMini)
+                {
+                    uint256 hash;
+                    SHA256((unsigned char*)psz, nSecretLength, (unsigned char*)&hash);
+					vector<unsigned char> v;
+					v.resize(1);
+					v[0] = (unsigned char)158;
+                    SetData(v, (unsigned char*)&hash, 32);
+					
+                    return true;
+                }
+            }
+        }
+    }
+    return CBase58Data::SetString(psz) && IsValid();
 }
 
 bool CBitcoinSecret::SetString(const std::string& strSecret) {

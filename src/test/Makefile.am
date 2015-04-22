@@ -43,7 +43,6 @@ test_unattainiumv2_SOURCES = \
   checkblock_tests.cpp \
   Checkpoints_tests.cpp \
   compress_tests.cpp \
-  DoS_tests.cpp \
   getarg_tests.cpp \
   key_tests.cpp \
   main_tests.cpp \

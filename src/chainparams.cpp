@@ -68,13 +68,13 @@ public:
         
 
 		vSeeds.push_back(CDNSSeedData("seed #1", "node.unattainium.tk:30881"));
-        vSeeds.push_back(CDNSSeedData("seed #2", "74.15.231.199:11015"));
+        vSeeds.push_back(CDNSSeedData("seed #2", "71.237.125.226"));
         vSeeds.push_back(CDNSSeedData("seed #3", "node.unattainium.tk"));
-        vSeeds.push_back(CDNSSeedData("seed #4", "46.28.205.70"));
-		vSeeds.push_back(CDNSSeedData("seed #5", "47.17.84.135"));
-		vSeeds.push_back(CDNSSeedData("seed #6", "70.70.136.216"));
-		vSeeds.push_back(CDNSSeedData("seed #7", "75.130.163.51"));
-		vSeeds.push_back(CDNSSeedData("seed #8", "76.164.203.26"));
+        vSeeds.push_back(CDNSSeedData("seed #4", "198.245.50.213"));
+		vSeeds.push_back(CDNSSeedData("seed #5", "82.200.205.30"));
+		vSeeds.push_back(CDNSSeedData("seed #6", "37.187.245.222"));
+		vSeeds.push_back(CDNSSeedData("seed #7", "209.188.18.164"));
+		vSeeds.push_back(CDNSSeedData("seed #8", "144.76.238.2"));
 		vSeeds.push_back(CDNSSeedData("seed #9", "76.164.237.242"));
 
 		

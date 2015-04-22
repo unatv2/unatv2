@@ -21,13 +21,16 @@ EditAddressDialog::EditAddressDialog(Mode mode, QWidget *parent) :
     ui->setupUi(this);
 	ui->label_3->setVisible(false);
 	ui->rescanCheckBox->setVisible(false);
+	ui->stealthCB->setEnabled(false);
     GUIUtil::setupAddressWidget(ui->addressEdit, this);
 
     switch(mode)
     {
     case NewReceivingAddress:
         setWindowTitle(tr("New receiving address"));
-        ui->addressEdit->setEnabled(false);
+        ui->addressEdit->setEnabled(false);	
+		ui->stealthCB->setEnabled(true);
+        ui->stealthCB->setVisible(true);
         break;
     case NewSendingAddress:
         setWindowTitle(tr("New sending address"));
@@ -51,6 +54,7 @@ EditAddressDialog::EditAddressDialog(Mode mode, QWidget *parent) :
 
     mapper = new QDataWidgetMapper(this);
     mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+    mapper->addMapping(ui->stealthCB, AddressTableModel::Type);
 }
 
 EditAddressDialog::~EditAddressDialog()
@@ -84,10 +88,12 @@ bool EditAddressDialog::saveCurrentRow()
     {
     case NewReceivingAddress:
     case NewSendingAddress:
+	typeInd = ui->stealthCB->isChecked() ? AddressTableModel::AT_Stealth : AddressTableModel::AT_Normal;
         address = model->addRow(
                 mode == NewSendingAddress ? AddressTableModel::Send : AddressTableModel::Receive,
                 ui->labelEdit->text(),
-                ui->addressEdit->text());
+                ui->addressEdit->text(),
+		typeInd);
         break;
     case EditReceivingAddress:
     case EditSendingAddress:
@@ -121,7 +127,7 @@ void EditAddressDialog::accept()
         {
 		case AddressTableModel::INVALID_PRIVKEY:
 			QMessageBox::warning(this, windowTitle(),
-			tr("The entered key is not a valid digitalcoin private key."),
+			tr("The entered key is not a valid Unattainiumv2 private key."),
 			QMessageBox::Ok, QMessageBox::Ok);
 			return;
 		case AddressTableModel::INVALID_MINIKEY:

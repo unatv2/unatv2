@@ -475,7 +475,7 @@ int main(int argc, char *argv[])
 #endif
 
     Q_INIT_RESOURCE(bitcoin);
-
+    GUIUtil::SubstituteFonts();
 
     BitcoinApplication app(argc, argv);
 #if QT_VERSION > 0x050100

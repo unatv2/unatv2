@@ -16,7 +16,9 @@
 class ClientModel;
 class Notificator;
 class RPCConsole;
+class ExchangeBrowser;
 class ChatWindow;
+class BlockBrowser;
 class SendCoinsRecipient;
 class WalletFrame;
 class WalletModel;
@@ -68,7 +70,8 @@ protected:
 private:
     ClientModel *clientModel;
     WalletFrame *walletFrame;
-
+    BlockBrowser *blockBrowser;
+	
     QLabel *labelEncryptionIcon;
     QLabel *labelConnectionsIcon;
     QLabel *labelBlocksIcon;
@@ -78,6 +81,8 @@ private:
     QMenuBar *appMenuBar;
 	QAction *chatAction;
 	QAction *reloadUiAction;
+	QAction *exchangeAction;
+	QAction *blockAction;
     QAction *overviewAction;
     QAction *historyAction;
     QAction *quitAction;
@@ -167,6 +172,11 @@ private slots:
     void gotoHistoryPage();
 	/** Switch to chat page */
     void gotoChatPage();
+	/** Switch to exchange browser page */
+    void gotoExchangeBrowserPage();
+    /** Switch to Block Browser Page */
+    void gotoBlockBrowserPage(); 
+	
     /** Switch to receive coins page */
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */

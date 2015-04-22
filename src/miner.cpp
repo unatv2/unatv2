@@ -704,7 +704,7 @@ void static ScryptMiner(CWallet *pwallet)
     while(true)
     {
         MinerWaitOnline();
-        
+
         //
         // Create new block
         //
@@ -716,7 +716,7 @@ void static ScryptMiner(CWallet *pwallet)
             return;
         CBlock *pblock = &pblocktemplate->block;
         IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
-            
+
         LogPrintf("Running scrypt miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
                ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 

@@ -134,7 +134,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, int vout, int u
         // Coinbase
         //
         int64_t nUnmatured = 0;
-	int nDepth = wtx.GetDepthInMainChain();
+        int nDepth = wtx.GetDepthInMainChain();
         BOOST_FOREACH(const CTxOut& txout, wtx.vout)
             nUnmatured += wallet->GetCredit(txout);
         strHTML += "<b>" + tr("Credit") + ":</b> ";

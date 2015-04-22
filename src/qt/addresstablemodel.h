@@ -34,8 +34,9 @@ public:
     enum ColumnIndex
     {
         Label = 0,   /**< User specified label */
-        Address = 1  /**< Bitcoin address */
-    };
+        Address = 1, /**< Bitcoin address */
+        Type = 2     /**< Address type */
+    };		
 
     enum RoleIndex {
         TypeRole = Qt::UserRole /**< Type of address (#Send or #Receive) */

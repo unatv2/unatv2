@@ -1207,7 +1207,6 @@ const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, int algo)
     }
 }
 
-// static const int64_t nDiffChangeTarget = 0; // Patch effective @ block 0
 static const int64_t patchBlockRewardDuration = 10080; // 10080 blocks main net change
 static const int64_t patchBlockRewardDuration2 = 80160; // 80160 blocks main net change
 #define HARDFORK1_BLOCK 50
@@ -1294,9 +1293,6 @@ static const int64_t nIntervalORIG = nTargetTimespanORIG / nTargetSpacingORIG; /
 static const int64_t nTargetTimespan = 32; // hardfork2
 static const int64_t nTargetSpacing = 8; // hardfork 2
 static const int64_t nInterval = nTargetTimespan / nTargetSpacing;
-//static const int64_t nTargetTimespanRe = 1*60; // 60 Seconds digibyte
-//static const int64_t nTargetSpacingRe = 1*60; // 60 seconds digibyte
-//static const int64_t nIntervalRe = nTargetTimespanRe / nTargetSpacingRe; // 1 block  digibyte
 
 //MultiAlgo Target updates
 static const int64_t multiAlgoTargetTimespan = 150; // 2.5 minutes (NUM_ALGOS * 30 seconds)
@@ -1611,7 +1607,7 @@ void CheckForkWarningConditionsOnNewFork(CBlockIndex* pindexNewForkTip)
         pfork = pfork->pprev;
     }
 
-    // We define a condition which we should warn the user about as a fork of at least 7 blocks
+    // We define a condition which we should warn the user about as a fork of at least 20 blocks
     // who's tip is within 72 blocks (+/- 12 hours if no one mines it) of ours
     // We use 7 blocks rather arbitrarily as it represents just under 10% of sustained network
     // hash rate operating on the fork.
@@ -1619,7 +1615,7 @@ void CheckForkWarningConditionsOnNewFork(CBlockIndex* pindexNewForkTip)
     // We define it this way because it allows us to only store the highest fork tip (+ base) which meets
     // the 7-block condition and from this always have the most-likely-to-cause-warning fork
     if (pfork && (!pindexBestForkTip || (pindexBestForkTip && pindexNewForkTip->nHeight > pindexBestForkTip->nHeight)) &&
-            pindexNewForkTip->nChainWork - pfork->nChainWork > (pfork->GetBlockWorkAdjusted() * 7).getuint256() &&
+            pindexNewForkTip->nChainWork - pfork->nChainWork > (pfork->GetBlockWorkAdjusted() * 20).getuint256() &&
             chainActive.Height() - pindexNewForkTip->nHeight < 72)
     {
         pindexBestForkTip = pindexNewForkTip;
@@ -2006,8 +2002,6 @@ bool ConnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex, C
 
     int64_t nStart = GetTimeMicros();
     int64_t nFees = 0;
-	int64_t nValueIn = 0;
-    int64_t nValueOut = 0;
     int nInputs = 0;
     unsigned int nSigOps = 0;
     CDiskTxPos pos(pindex->GetBlockPos(), GetSizeOfCompactSize(block.vtx.size()));
@@ -3077,9 +3071,7 @@ bool static LoadBlockIndexDB()
         pindex->nChainWork = (pindex->pprev ? pindex->pprev->nChainWork : 0) + pindex->GetBlockWorkAdjusted().getuint256();
         pindex->nChainTx = (pindex->pprev ? pindex->pprev->nChainTx : 0) + pindex->nTx;
         if ((pindex->nStatus & BLOCK_VALID_MASK) >= BLOCK_VALID_TRANSACTIONS && !(pindex->nStatus & BLOCK_FAILED_MASK))
-        {
             setBlockIndexValid.insert(pindex);
-        }
         if (pindex->nStatus & BLOCK_FAILED_MASK && (!pindexBestInvalid || pindex->nChainWork > pindexBestInvalid->nChainWork))
             pindexBestInvalid = pindex;
     }
@@ -3655,7 +3647,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         if (!vRecv.empty())
             vRecv >> addrFrom >> nNonce;
         if (!vRecv.empty()) {
-            vRecv >> pfrom->strSubVer;
+            vRecv >> LIMITED_STRING(pfrom->strSubVer, 256);
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
 			//start disconnect old nodes
             if (
