@@ -16,7 +16,7 @@
 class ClientModel;
 class Notificator;
 class RPCConsole;
-class ExchangeBrowser;
+//class ExchangeBrowser;
 class ChatWindow;
 class BlockBrowser;
 class SendCoinsRecipient;
@@ -81,7 +81,7 @@ private:
     QMenuBar *appMenuBar;
 	QAction *chatAction;
 	QAction *reloadUiAction;
-	QAction *exchangeAction;
+	//QAction *exchangeAction;
 	QAction *blockAction;
     QAction *overviewAction;
     QAction *historyAction;
@@ -173,7 +173,7 @@ private slots:
 	/** Switch to chat page */
     void gotoChatPage();
 	/** Switch to exchange browser page */
-    void gotoExchangeBrowserPage();
+    //void gotoExchangeBrowserPage();
     /** Switch to Block Browser Page */
     void gotoBlockBrowserPage(); 
 	

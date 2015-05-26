@@ -255,13 +255,13 @@ void BitcoinGUI::createActions(bool fIsTestnet)
 	chatAction->setToolTip(tr("View chat"));
 	chatAction->setCheckable(true);
 	tabGroup->addAction(chatAction);
-	
+	/*
 	exchangeAction = new QAction(QIcon(":/icons/markets"), tr("&Market Data"), this);
 	exchangeAction->setToolTip(tr("Market"));
 	exchangeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
 	exchangeAction->setCheckable(true);
 	tabGroup->addAction(exchangeAction);
-	
+	*/
 	blockAction = new QAction(QIcon(":/icons/blexp"), tr("&Block Explorer"), this);
  	blockAction->setStatusTip(tr("Explore the BlockChain"));
 	blockAction->setToolTip(blockAction->statusTip());
@@ -280,7 +280,7 @@ void BitcoinGUI::createActions(bool fIsTestnet)
     connect(historyAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
 	connect(chatAction, SIGNAL(triggered()), this, SLOT(gotoChatPage()));
-	connect(exchangeAction, SIGNAL(triggered()), this, SLOT(gotoExchangeBrowserPage()));
+	//connect(exchangeAction, SIGNAL(triggered()), this, SLOT(gotoExchangeBrowserPage()));
 	connect(blockAction, SIGNAL(triggered()), this, SLOT(gotoBlockBrowserPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
@@ -420,7 +420,7 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
 		toolbar->addAction(chatAction);
-		toolbar->addAction(exchangeAction);
+		//toolbar->addAction(exchangeAction);
 		toolbar->addAction(blockAction);
         overviewAction->setChecked(true);
     }
@@ -624,12 +624,12 @@ void BitcoinGUI::gotoChatPage()
     chatAction->setChecked(true);
     if (walletFrame) walletFrame->gotoChatPage();
 }
-
+/*
 void BitcoinGUI::gotoExchangeBrowserPage()
 {
     exchangeAction->setChecked(true);
     if (walletFrame) walletFrame->gotoExchangeBrowserPage();
-}
+}*/
 
 void BitcoinGUI::gotoBlockBrowserPage()
 {

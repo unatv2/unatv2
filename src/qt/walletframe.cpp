@@ -125,13 +125,13 @@ void WalletFrame::gotoChatPage()
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoChatPage();
 }
-
+/*
 void WalletFrame::gotoExchangeBrowserPage()
 {
     QMap<QString, WalletView*>::const_iterator i;
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoExchangeBrowserPage();
-}
+}*/
 
 
 void WalletFrame::gotoReceiveCoinsPage()
